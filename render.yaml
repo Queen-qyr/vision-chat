@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ai-vision-chat
+    runtime: node
+    plan: free
+    buildCommand: npm run install:all && npm run build
+    startCommand: npm start
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: NODE_VERSION
+        value: "20"

@@ -1,0 +1,9 @@
+node_modules
+client/node_modules
+client/dist
+.env
+.git
+*.log
+.DS_Store
+启动.bat
+开发模式.bat
