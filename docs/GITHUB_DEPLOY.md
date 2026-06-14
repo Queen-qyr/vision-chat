@@ -56,8 +56,8 @@ git push -u origin main
 
 | Key | Value |
 |-----|-------|
-| `OPENAI_API_KEY` | 你的 OpenAI 密钥（sk-...） |
-| `OPENAI_MODEL` | `gpt-4o-mini`（可选） |
+| `ZHIPU_API_KEY` | 你的智谱 API 密钥（在 https://open.bigmodel.cn 申请） |
+| `ZHIPU_MODEL` | `glm-4v-flash`（免费视觉模型，可选） |
 
 保存后 Render 会自动重新部署。
 

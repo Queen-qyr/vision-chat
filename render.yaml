@@ -1,14 +1,14 @@
 services:
   - type: web
-    name: ai-vision-chat
+    name: vision-chat
     runtime: node
     plan: free
     buildCommand: npm run install:all && npm run build
     startCommand: npm start
     envVars:
-      - key: OPENAI_API_KEY
+      - key: ZHIPU_API_KEY
         sync: false
-      - key: OPENAI_MODEL
-        value: gpt-4o-mini
+      - key: ZHIPU_MODEL
+        value: glm-4v-flash
       - key: NODE_VERSION
         value: "20"

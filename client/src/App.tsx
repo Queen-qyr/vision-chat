@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMediaStream } from './hooks/useMediaStream';
 import {
-  speakCloud,
   speakLocal,
   stopSpeaking,
   useSpeechRecognition,
@@ -16,7 +15,6 @@ interface Message {
   tokens?: number;
 }
 
-type TtsMode = 'local' | 'cloud';
 
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -28,7 +26,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [micEnabled, setMicEnabled] = useState(true);
-  const [ttsMode, setTtsMode] = useState<TtsMode>('local');
+  const [modelName, setModelName] = useState('glm-4v-flash');
   const [costStats, setCostStats] = useState<CostStats>(createCostStats());
 
   const costStatsRef = useRef(costStats);
@@ -116,15 +114,7 @@ export default function App() {
 
         setIsSpeaking(true);
         stopSpeaking();
-        if (ttsMode === 'cloud') {
-          try {
-            await speakCloud(data.reply);
-          } catch {
-            await speakLocal(data.reply);
-          }
-        } else {
-          await speakLocal(data.reply);
-        }
+        await speakLocal(data.reply);
         setIsSpeaking(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : '对话失败');
@@ -133,7 +123,7 @@ export default function App() {
         setIsProcessing(false);
       }
     },
-    [messages, videoRef, videoEnabled, ttsMode],
+    [messages, videoRef, videoEnabled],
   );
 
   const handleSpeechResult = useCallback(
@@ -177,7 +167,10 @@ export default function App() {
   useEffect(() => {
     fetch('/api/health')
       .then((r) => r.json())
-      .then((d) => setApiReady(d.hasApiKey))
+      .then((d) => {
+        setApiReady(d.hasApiKey);
+        if (d.model) setModelName(d.model);
+      })
       .catch(() => setApiReady(false));
   }, []);
 
@@ -202,15 +195,9 @@ export default function App() {
           <span>👁️</span> AI 视觉对话助手
         </h1>
         <div className="settings-row">
-          <label>
-            语音合成：
-            <select value={ttsMode} onChange={(e) => setTtsMode(e.target.value as TtsMode)}>
-              <option value="local">浏览器（免费）</option>
-              <option value="cloud">云端 OpenAI（高质量）</option>
-            </select>
-          </label>
+          <span>模型：{modelName}</span>
           <span>
-            API：
+            智谱 API：
             {apiReady === null ? '检测中' : apiReady ? '✓ 已配置' : '✗ 未配置'}
           </span>
         </div>
